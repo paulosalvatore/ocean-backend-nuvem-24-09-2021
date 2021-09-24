@@ -124,10 +124,10 @@ const app = express();
 
     // [DELETE] /personagens/:id
     // Delete
-    app.delete("/personagens/:id", function (req, res) {
-        const id = +req.params.id;
+    app.delete("/personagens/:id", async function (req, res) {
+        const id = req.params.id;
 
-        const itemEncontrado = findById(id);
+        const itemEncontrado = await findById(id);
 
         if (!itemEncontrado) {
             res.status(404).send("Personagem não encontrado.");
@@ -135,9 +135,7 @@ const app = express();
             return;
         }
 
-        const index = lista.indexOf(itemEncontrado);
-
-        lista.splice(index, 1);
+        await collection.deleteOne({ _id: new ObjectId(id) });
 
         res.send("Personagem removida com sucesso!");
     });
